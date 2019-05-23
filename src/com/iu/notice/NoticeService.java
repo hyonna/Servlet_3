@@ -101,7 +101,6 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 		//글이 없으면 result.jsp로 보내서 메세지 (삭제되었거나, 없는 글 입니다) 알럿창 띄우고 /리스트로 다시 돌아감
 		
 		NoticeDTO noticeDTO = null;
-		UploadDTO uploadDTO = null;
 		
 		int num = 0;
 		
@@ -109,7 +108,7 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 			
 			num = Integer.parseInt(request.getParameter("num")); //여기서 문제 발생하면 catch로 넘어감
 			noticeDTO = noticeDAO.selectOne(num);
-			uploadDTO = uploadDAO.selectOne(num);
+			
 			
 			
 			
@@ -124,7 +123,6 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 		if (noticeDTO != null) {
 			
 			request.setAttribute("select", noticeDTO);
-			request.setAttribute("upload", uploadDTO);
 			path="../WEB-INF/views/notice/noticeSelect.jsp";
 			
 		} else {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.iu.page.SearchRow;
+import com.iu.upload.UploadDTO;
 import com.iu.util.DBConnector;
 
 public class NoticeDAO {
@@ -158,7 +159,8 @@ public class NoticeDAO {
 		
 		Connection con = DBConnector.getConnect();
 		
-		String sql = "select * from notice where num=?";
+		String sql = "select N.*, U.* from notice N full outer join "
+				+ "upload U on N.num=U.num where N.num=?";
 		
 		PreparedStatement st = con.prepareStatement(sql);
 		
@@ -178,6 +180,14 @@ public class NoticeDAO {
 			noticeDTO.setName(rs.getString("name"));
 			noticeDTO.setReg_date(rs.getDate("reg_date"));
 			noticeDTO.setHit(rs.getInt("hit"));
+			UploadDTO uploadDTO = new UploadDTO();
+			uploadDTO.setFname(rs.getString("fname"));
+			uploadDTO.setOname(rs.getString("oname"));
+			uploadDTO.setPnum(rs.getInt("pnum"));
+			noticeDTO.setUploadDTO(uploadDTO);
+			
+//			noticeDTO.setUploadDTO(new UploadDTO());
+//			noticeDTO.getUploadDTO().setPnum(rs.getInt("pnum"));
 			
 		}
 		

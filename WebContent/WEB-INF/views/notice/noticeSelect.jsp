@@ -47,7 +47,7 @@
 		<td>${select.hit}</td>
 		<td>${param.num*select.num}</td> <%-- [산술연산자] ${a+b} : +, -, *, /, % --%>
 		<td>${select.name == 'admin'}</td> <%-- [비교연산자] ${a>b} : ==, !=, >, <, >=, <= --%>
-		<td><a href="../upload/${upload.fname}">${upload.oname}</a></td>
+		<td><a href="../upload/${select.uploadDTO.fname}">${select.uploadDTO.oname}</a></td>
 	
 	
 	
@@ -56,7 +56,6 @@
 	
 
 </table>
-<img src="../upload/${upload.oname}" width="350px" style="display: block;">
 <a href="./noticeUpdate?num=${select.num}" class="btn btn-danger">Update</a>
 <a href="./noticeDelete?num=${select.num}" class="btn btn-danger">Delete</a>
 

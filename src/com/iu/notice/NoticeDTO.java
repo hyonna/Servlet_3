@@ -2,6 +2,8 @@ package com.iu.notice;
 
 import java.sql.Date;
 
+import com.iu.upload.UploadDTO;
+
 public class NoticeDTO {
 	
 	
@@ -11,6 +13,17 @@ public class NoticeDTO {
 	private String name;
 	private Date reg_date;
 	private int hit;
+	private UploadDTO uploadDTO;
+	
+	
+	
+	
+	public UploadDTO getUploadDTO() {
+		return uploadDTO;
+	}
+	public void setUploadDTO(UploadDTO uploadDTO) {
+		this.uploadDTO = uploadDTO;
+	}
 	
 	
 	public int getNum() {
