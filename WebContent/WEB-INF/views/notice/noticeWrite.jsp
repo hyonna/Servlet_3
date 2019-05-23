@@ -16,6 +16,7 @@
 	<h1>NoticeWrite Page</h1>
 
  <form action="./noticeWrite" method="post" enctype="multipart/form-data">
+<!--  데이터가 크기 때문에 메소드는 포스트로, 파일 업로드시  enctype=multipart/form-data 필수 -->
  
     <div class="form-group">
       <label for="title">title :</label>
