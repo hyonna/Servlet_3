@@ -1,6 +1,8 @@
 package com.iu.notice;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import com.iu.page.SearchPager;
 import com.iu.page.SearchRow;
 import com.iu.upload.UploadDAO;
 import com.iu.upload.UploadDTO;
+import com.iu.util.DBConnector;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -137,6 +140,8 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 		
 		return actionFoward;
 	}
+	
+	// -------------------------------------------- INSERT START
 
 	@Override
 	public ActionFoward insert(HttpServletRequest request, HttpServletResponse response) {
@@ -183,21 +188,54 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 			noticeDTO.setName(multi.getParameter("name"));
 			noticeDTO.setContents(multi.getParameter("contents"));
 			int result = 0;
+			Connection con = null;
 			
 			try {
 				
-
-				int num = noticeDAO.getNum(); //DAO의 MAX 메소드
-				noticeDTO.setNum(num);
-				result = noticeDAO.insert(noticeDTO);
-				uploadDTO.setNum(num);
-				result = uploadDAO.insert(uploadDTO);
+				con = DBConnector.getConnect();
+				//auto commit 해제
+				con.setAutoCommit(false);
 				
+				int num = noticeDAO.getNum();
+				noticeDTO.setNum(num);
+				result = noticeDAO.insert(noticeDTO, con);
+				
+//				if(result>0) {
+//					
+//					throw new Exception();
+//				}
+				
+				uploadDTO.setNum(num);
+				result = uploadDAO.insert(uploadDTO, con);
+				
+				if(result < 1) {
+					
+					throw new Exception();
+					
+				}
+				
+				con.commit();
 				
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				result = 0; //실패했다는 뜻
+				
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				
+			} finally {
+				
+				try {
+					con.setAutoCommit(true);
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}
 			

@@ -56,7 +56,7 @@
 	
 
 </table>
-<img src="../upload/${upload.fname}" width="350px">
+<img src="../upload/${upload.oname}" width="350px" style="display: block;">
 <a href="./noticeUpdate?num=${select.num}" class="btn btn-danger">Update</a>
 <a href="./noticeDelete?num=${select.num}" class="btn btn-danger">Delete</a>
 

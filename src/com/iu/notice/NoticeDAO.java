@@ -34,9 +34,8 @@ public class NoticeDAO {
 	}
 	
 	
-	public int insert(NoticeDTO noticeDTO) throws Exception {
+	public int insert(NoticeDTO noticeDTO, Connection con) throws Exception {
 		
-		Connection con = DBConnector.getConnect();
 		
 		String sql = "insert into notice values(?, ?, ?, ?, sysdate, 0)";
 		
@@ -50,38 +49,38 @@ public class NoticeDAO {
 		
 		int result = st.executeUpdate();
 		
-		DBConnector.disConnect(con, st);
+		st.close();
 		
 		return result;
 	}
 	
 	
 	
-	public static void main(String[] args) {
-		
-		NoticeDAO noticeDAO = new NoticeDAO();
-		Random random = new Random();
-		
-		for(int i = 0; i < 100; i++) {
-			
-			NoticeDTO noticeDTO = new NoticeDTO();
-			noticeDTO.setTitle("title"+i);
-			noticeDTO.setContents("contents"+random.nextInt(100));
-			noticeDTO.setName("name"+i);
-			
-			try {
-				noticeDAO.insert(noticeDTO);
-				Thread.sleep(300);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-		}
-		
-		
-	}
+//	public static void main(String[] args) {
+//		
+//		NoticeDAO noticeDAO = new NoticeDAO();
+//		Random random = new Random();
+//		
+//		for(int i = 0; i < 100; i++) {
+//			
+//			NoticeDTO noticeDTO = new NoticeDTO();
+//			noticeDTO.setTitle("title"+i);
+//			noticeDTO.setContents("contents"+random.nextInt(100));
+//			noticeDTO.setName("name"+i);
+//			
+//			try {
+//				noticeDAO.insert(noticeDTO, null);
+//				Thread.sleep(300);
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			
+//		}
+//		
+//		
+//	}
 	
 	
 	//getTotalCount 
