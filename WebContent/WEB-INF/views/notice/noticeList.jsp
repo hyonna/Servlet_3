@@ -44,8 +44,10 @@
 		</tr>
 	</c:forEach>
 
-</table>
 
+
+</table>
+<a href="./noticeWrite" class="btn btn-danger">Go Write</a>
 
 </div>
 
@@ -72,7 +74,7 @@
   </ul>
 </div>
 
-<a href="./noticeWrite">Go Write</a>
+
 
 
 </body>

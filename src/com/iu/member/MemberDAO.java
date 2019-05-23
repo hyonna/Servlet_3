@@ -6,12 +6,13 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import com.iu.util.DBConnector;
+import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 
 public class MemberDAO {
 	
-	public MemberDAO() {
-		
-	}
+	
+	
+	
 	
 	public int idCheck(String id) throws Exception {
 		
@@ -161,9 +162,8 @@ public class MemberDAO {
 	
 	/* 회원가입 */
 	
-	public int memberJoin(MemberDTO memberDTO) throws Exception {
+	public int memberJoin(MemberDTO memberDTO, Connection con) throws Exception {
 		
-		Connection con = DBConnector.getConnect();
 		
 		String sql = "insert into member values(?, ?, ?, ?, ?, ?)"; //id, pw, name, phone, email, age
 		
@@ -178,8 +178,7 @@ public class MemberDAO {
 		
 		int result = st.executeUpdate();
 		
-		DBConnector.disConnect(con, st);
-		
+		st.close();
 		
 		return result;
 		

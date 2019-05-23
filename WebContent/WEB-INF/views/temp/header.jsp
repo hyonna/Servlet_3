@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
@@ -18,17 +19,27 @@
       <li><a href="#">Page 2</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span class="glyphicon glyphicon-user"></span>Sign Up</a></li> <!-- 로그인 했을때 안했을때 구분 -->
-      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+
+	<c:choose> 
+	
+		<c:when test="${sessionScope.session.id == null}">
+		
+      <li><a href="<%=application.getContextPath()%>/member/memberCheck"><span class="glyphicon glyphicon-user"></span>Sign Up</a></li> 
+      <li><a href="<%=application.getContextPath()%>/member/memberLogin"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+		
+		
+		</c:when> 
+		<c:otherwise>
+		
+		<li><a href="<%=application.getContextPath()%>/member/memberPage"><span class="glyphicon glyphicon-user"></span>My Page</a></li> 
+      <li><a href="<%=application.getContextPath()%>/member/memberLogout"><span class="glyphicon glyphicon-log-in"></span>Logout</a></li>
+		
+		</c:otherwise> 
+	
+	   
+	
+</c:choose> 
     </ul>
   </div>
 </nav>
 
-
-
-<div class="container">
-  <div class="jumbotron">
-    <h1>Bootstrap Tutorial</h1>      
-    <p>Bootstrap is the most popular HTML, CSS, and JS framework for developing responsive, mobile-first projects on the web.</p>
-  </div>
-</div>
