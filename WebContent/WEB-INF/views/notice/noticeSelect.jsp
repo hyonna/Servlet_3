@@ -35,6 +35,7 @@
 		<td>HIT</td>
 		<td>PARAM</td>
 		<td>name비교연산자</td>
+		<td>upload name</td>
 		
 	</tr>
 	<tr>
@@ -46,13 +47,16 @@
 		<td>${select.hit}</td>
 		<td>${param.num*select.num}</td> <%-- [산술연산자] ${a+b} : +, -, *, /, % --%>
 		<td>${select.name == 'admin'}</td> <%-- [비교연산자] ${a>b} : ==, !=, >, <, >=, <= --%>
+		<td><a href="../upload/${upload.fname}">${upload.oname}</a></td>
 	
 	
 	
 	</tr>
+	
+	
 
 </table>
-
+<img src="../upload/${upload.oname}" width="350px" style="display: block;">
 <a href="./noticeUpdate?num=${select.num}" class="btn btn-danger">Update</a>
 <a href="./noticeDelete?num=${select.num}" class="btn btn-danger">Delete</a>
 

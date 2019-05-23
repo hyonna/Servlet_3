@@ -1,6 +1,8 @@
 package com.iu.notice;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,9 @@ import com.iu.action.ActionFoward;
 import com.iu.page.SearchMakePage;
 import com.iu.page.SearchPager;
 import com.iu.page.SearchRow;
+import com.iu.upload.UploadDAO;
+import com.iu.upload.UploadDTO;
+import com.iu.util.DBConnector;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -19,9 +24,11 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 	//서비스안에 있는 리턴은 전부 ActionFoward로
 	
 	private NoticeDAO noticeDAO;
+	private UploadDAO uploadDAO;
 	
 	public NoticeService() {
 		noticeDAO = new NoticeDAO();
+		uploadDAO = new UploadDAO();
 	}
 	
 	
@@ -82,6 +89,8 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 				
 		return actionFoward;
 	}
+	
+	// -------------------------------------------- SELECT START
 
 	@Override
 	public ActionFoward select(HttpServletRequest request, HttpServletResponse response) {
@@ -92,11 +101,17 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 		//글이 없으면 result.jsp로 보내서 메세지 (삭제되었거나, 없는 글 입니다) 알럿창 띄우고 /리스트로 다시 돌아감
 		
 		NoticeDTO noticeDTO = null;
+		UploadDTO uploadDTO = null;
+		
+		int num = 0;
 		
 		try {
 			
-			int num = Integer.parseInt(request.getParameter("num")); //여기서 문제 발생하면 catch로 넘어감
+			num = Integer.parseInt(request.getParameter("num")); //여기서 문제 발생하면 catch로 넘어감
 			noticeDTO = noticeDAO.selectOne(num);
+			uploadDTO = uploadDAO.selectOne(num);
+			
+			
 			
 			
 		} catch (Exception e) {
@@ -109,6 +124,7 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 		if (noticeDTO != null) {
 			
 			request.setAttribute("select", noticeDTO);
+			request.setAttribute("upload", uploadDTO);
 			path="../WEB-INF/views/notice/noticeSelect.jsp";
 			
 		} else {
@@ -124,6 +140,8 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 		
 		return actionFoward;
 	}
+	
+	// -------------------------------------------- INSERT START
 
 	@Override
 	public ActionFoward insert(HttpServletRequest request, HttpServletResponse response) {
@@ -140,7 +158,8 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 			
 			//리퀘스트를 하나로 합치는 작업
 			String saveDirectory = request.getServletContext().getRealPath("upload");
-			//System.out.println(saveDirectory); //가상의 경로가 나옴 , 실제로는 upload 폴더를 가리킴 , 배포하면 실제로 들어감
+			System.out.println(saveDirectory); 
+			//가상의 경로가 나옴 , 실제로는 upload 폴더를 가리킴 , 배포하면 실제로 들어감, 저장할 파일의 경로
 			
 			int maxPostSize = 1024*1024*10; //단위는 바이트 단위 , 최대 크기를 설정
 			String encoding = "UTF-8";
@@ -158,23 +177,65 @@ public abstract class NoticeService implements Action{ //추상클래스 Action 
 			String fileName = multi.getFilesystemName("f1"); //파일의 파라미터이름
 			//클라이언트가 업로드할때의 파일 이름
 			String oName = multi.getOriginalFileName("f1"); //파일의 파라미터이름
-			System.out.println("filename : " + fileName);
-			System.out.println("oname : " + oName);
+			
+			
+			UploadDTO uploadDTO = new UploadDTO();
+			uploadDTO.setFname(fileName);
+			uploadDTO.setOname(oName);
+
 			
 			noticeDTO.setTitle(multi.getParameter("title"));
 			noticeDTO.setName(multi.getParameter("name"));
 			noticeDTO.setContents(multi.getParameter("contents"));
 			int result = 0;
+			Connection con = null;
 			
 			try {
 				
-				result = noticeDAO.insert(noticeDTO);
+				con = DBConnector.getConnect();
+				//auto commit 해제
+				con.setAutoCommit(false);
 				
+				int num = noticeDAO.getNum();
+				noticeDTO.setNum(num);
+				result = noticeDAO.insert(noticeDTO, con);
+				
+//				if(result>0) {
+//					
+//					throw new Exception();
+//				}
+				
+				uploadDTO.setNum(num);
+				result = uploadDAO.insert(uploadDTO, con);
+				
+				if(result < 1) {
+					
+					throw new Exception();
+					
+				}
+				
+				con.commit();
 				
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				result = 0; //실패했다는 뜻
+				
+				try {
+					con.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				
+			} finally {
+				
+				try {
+					con.setAutoCommit(true);
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 			}
 			

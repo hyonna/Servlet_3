@@ -11,32 +11,76 @@ import com.iu.util.DBConnector;
 
 public class NoticeDAO {
 	
-	
-	public static void main(String[] args) {
+	//num 가져오기
+	public int getNum() throws Exception {
 		
-		NoticeDAO noticeDAO = new NoticeDAO();
-		Random random = new Random();
+		int result = 0;
 		
-		for(int i = 0; i < 100; i++) {
-			
-			NoticeDTO noticeDTO = new NoticeDTO();
-			noticeDTO.setTitle("title"+i);
-			noticeDTO.setContents("contents"+random.nextInt(100));
-			noticeDTO.setName("name"+i);
-			
-			try {
-				noticeDAO.insert(noticeDTO);
-				Thread.sleep(300);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-		}
+		Connection con = DBConnector.getConnect();
 		
+		String sql = "select notice_seq.nextval from dual"; //notice_seq.nextval 이라는 컬럼명이 없으니까 가상의 테이블명
 		
+		PreparedStatement st = con.prepareStatement(sql);
+		
+		ResultSet rs = st.executeQuery();
+		
+		rs.next();
+		
+		result = rs.getInt(1);
+		
+		DBConnector.disConnect(con, st, rs);
+		
+		return result;
 	}
+	
+	
+	public int insert(NoticeDTO noticeDTO, Connection con) throws Exception {
+		
+		
+		String sql = "insert into notice values(?, ?, ?, ?, sysdate, 0)";
+		
+		PreparedStatement st = con.prepareStatement(sql);
+		
+		st.setInt(1, noticeDTO.getNum());
+		st.setString(2, noticeDTO.getTitle());
+		st.setString(3, noticeDTO.getContents());
+		st.setString(4, noticeDTO.getName());
+		
+		
+		int result = st.executeUpdate();
+		
+		st.close();
+		
+		return result;
+	}
+	
+	
+	
+//	public static void main(String[] args) {
+//		
+//		NoticeDAO noticeDAO = new NoticeDAO();
+//		Random random = new Random();
+//		
+//		for(int i = 0; i < 100; i++) {
+//			
+//			NoticeDTO noticeDTO = new NoticeDTO();
+//			noticeDTO.setTitle("title"+i);
+//			noticeDTO.setContents("contents"+random.nextInt(100));
+//			noticeDTO.setName("name"+i);
+//			
+//			try {
+//				noticeDAO.insert(noticeDTO, null);
+//				Thread.sleep(300);
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			
+//		}
+//		
+//		
+//	}
 	
 	
 	//getTotalCount 
@@ -189,25 +233,6 @@ public class NoticeDAO {
 	}
 	
 	
-	public int insert(NoticeDTO noticeDTO) throws Exception {
-		
-		Connection con = DBConnector.getConnect();
-		
-		String sql = "insert into notice values(notice_seq.nextval, ?, ?, ?, sysdate, 0)";
-		
-		PreparedStatement st = con.prepareStatement(sql);
-		
-		st.setString(1, noticeDTO.getTitle());
-		st.setString(2, noticeDTO.getContents());
-		st.setString(3, noticeDTO.getName());
-		
-		
-		int result = st.executeUpdate();
-		
-		DBConnector.disConnect(con, st);
-		
-		return result;
-	}
 	
 
 }

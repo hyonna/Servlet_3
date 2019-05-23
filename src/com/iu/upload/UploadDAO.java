@@ -46,11 +46,10 @@ public class UploadDAO {
 	
 	
 	//insert
-	public int insert(UploadDTO uploadDTO) throws Exception {
+	public int insert(UploadDTO uploadDTO, Connection con) throws Exception {
 		
 		int result = 0;
 		
-		Connection con = DBConnector.getConnect();
 		
 		String sql = "insert into upload values(point_seq.nextval, ?, ?, ?)";
 		
