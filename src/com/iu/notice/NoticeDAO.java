@@ -11,7 +11,7 @@ import com.iu.util.DBConnector;
 
 public class NoticeDAO {
 	
-	//num 가져오기
+	//시퀀스 num 가져오기
 	public int getNum() throws Exception {
 		
 		int result = 0;
