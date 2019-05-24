@@ -5,10 +5,10 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="<%=application.getContextPath()%>/index.do">WebSiteName</a>
+      <a class="navbar-brand" href="${pageContext.servletContext.contextPath}/index.do">WebSiteName</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="<%=application.getContextPath()%>/notice/noticeList">Notice</a></li>
+      <li class="active"><a href="${pageContext.request.contextPath}/notice/noticeList">Notice</a></li>
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li><a href="#">Page 1-1</a></li>
